@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Menu, X, Instagram, MapPin, Phone, Clock } from "lucide-react";
+import { Menu, X, Instagram, MapPin, Phone, Clock, ShoppingBag, User as UserIcon, LogOut, Shield } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -11,6 +13,8 @@ const navItems = [
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
+  const { user, isAdmin, signOut } = useAuth();
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/75 border-b border-border/60">
@@ -33,13 +37,39 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                 {n.label}
               </Link>
             ))}
-            <a href="tel:+923320336000" className="ml-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition shadow-[var(--shadow-soft)]">
-              <Phone className="w-4 h-4" /> Order Now
-            </a>
+            {isAdmin && (
+              <Link to="/admin" className="ml-2 inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-primary">
+                <Shield className="w-4 h-4" /> Admin
+              </Link>
+            )}
+            <Link to="/checkout" className="ml-2 relative inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-secondary text-foreground text-sm font-medium hover:bg-secondary/80 transition">
+              <ShoppingBag className="w-4 h-4" /> Cart
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] w-5 h-5 grid place-items-center rounded-full">{count}</span>
+              )}
+            </Link>
+            {user ? (
+              <div className="ml-2 flex items-center gap-1">
+                <Link to="/orders" className="px-3 py-2 text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-1.5"><UserIcon className="w-4 h-4" />Orders</Link>
+                <button onClick={signOut} className="p-2 text-muted-foreground hover:text-primary" aria-label="Sign out"><LogOut className="w-4 h-4" /></button>
+              </div>
+            ) : (
+              <Link to="/auth" className="ml-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition shadow-[var(--shadow-soft)]">
+                Sign In
+              </Link>
+            )}
           </nav>
-          <button className="md:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
-            {open ? <X /> : <Menu />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <Link to="/checkout" className="relative p-2">
+              <ShoppingBag className="w-5 h-5" />
+              {count > 0 && (
+                <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] w-4 h-4 grid place-items-center rounded-full">{count}</span>
+              )}
+            </Link>
+            <button className="p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
+              {open ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
         {open && (
           <div className="md:hidden border-t border-border/60 bg-background animate-fade-up">
@@ -47,7 +77,16 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               {navItems.map((n) => (
                 <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="py-3 text-base font-medium text-foreground">{n.label}</Link>
               ))}
-              <a href="tel:+923320336000" className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+              {user ? (
+                <>
+                  <Link to="/orders" onClick={() => setOpen(false)} className="py-3 text-base font-medium">My Orders</Link>
+                  {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="py-3 text-base font-medium">Admin</Link>}
+                  <button onClick={() => { setOpen(false); signOut(); }} className="py-3 text-left text-base font-medium text-muted-foreground">Sign out</button>
+                </>
+              ) : (
+                <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium">Sign In</Link>
+              )}
+              <a href="tel:+923320336000" className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-border text-sm font-medium">
                 <Phone className="w-4 h-4" /> +92 332 0336000
               </a>
             </div>
