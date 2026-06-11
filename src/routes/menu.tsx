@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useState } from "react";
-import { Utensils, Coffee, Leaf, Drumstick } from "lucide-react";
+import { Utensils, Coffee, Leaf, Drumstick, Plus, Minus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -15,25 +19,14 @@ export const Route = createFileRoute("/menu")({
   component: MenuPage,
 });
 
-type Section = { title: string; items: string[] };
-
-const foodVeg: Section[] = [
-  { title: "Desi & Rice", items: ["Channa Salan", "Channa Alo Tarkari", "Halwa", "Chapati / Roti"] },
-  { title: "Breakfast", items: ["Halwa Puri (Specialty)", "Channa Alo", "Traditional Breakfast Platter"] },
-  { title: "Sides & Add-ons", items: ["Raita", "Mint Chutney", "Salad", "Pickles"] },
-];
-
-const foodNonVeg: Section[] = [
-  { title: "Desi & Rice", items: ["Chicken Biryani with Raita (Most Popular)", "Chicken Pulao Rice"] },
-  { title: "Bar B Que (BBQ)", items: ["Turkish Kabab", "Chicken Tikka", "Chicken Seekh Kabab", "Beef Seekh Kabab", "Mixed BBQ Platter"] },
-  { title: "Fast Food & Rolls", items: ["Chicken Broast", "Zinger Burger", "Chicken Sandwich", "Chicken Chutney Roll", "Chicken Cheese Roll", "Assorted Chicken Rolls"] },
-];
-
-const beverages: Section[] = [
-  { title: "Refreshers", items: ["Strawberry Lemonade", "Fresh Lime", "Mint Margarita"] },
-  { title: "Soft Drinks", items: ["Cold Drinks (Regular)", "Cold Drinks (1.5 L)", "Mineral Water"] },
-  { title: "Hot", items: ["Doodh Patti Chai", "Karak Chai", "Green Tea"] },
-];
+type Product = {
+  id: string;
+  name: string;
+  category: string;
+  subcategory: string | null;
+  diet: string;
+  price_pkr: number;
+};
 
 type Tab = "food" | "beverages";
 type Diet = "all" | "veg" | "nonveg";
@@ -41,15 +34,39 @@ type Diet = "all" | "veg" | "nonveg";
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("food");
   const [diet, setDiet] = useState<Diet>("all");
+  const cart = useCart();
 
-  const sections =
-    tab === "beverages"
-      ? beverages
-      : diet === "veg"
-      ? foodVeg
-      : diet === "nonveg"
-      ? foodNonVeg
-      : [...foodNonVeg, ...foodVeg];
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("id, name, category, subcategory, diet, price_pkr")
+        .eq("is_available", true)
+        .order("sort_order");
+      if (error) throw error;
+      return data as Product[];
+    },
+  });
+
+  const filtered = (products || []).filter((p) => {
+    if (tab === "beverages") return p.category === "beverages";
+    if (p.category !== "food") return false;
+    if (diet === "veg") return p.diet === "veg";
+    if (diet === "nonveg") return p.diet === "nonveg";
+    return true;
+  });
+
+  const sections = Array.from(
+    filtered.reduce<Map<string, Product[]>>((acc, p) => {
+      const key = p.subcategory || "Other";
+      if (!acc.has(key)) acc.set(key, []);
+      acc.get(key)!.push(p);
+      return acc;
+    }, new Map()),
+  );
+
+  const qtyOf = (id: string) => cart.items.find((i) => i.id === id)?.quantity || 0;
 
   return (
     <SiteLayout>
@@ -57,7 +74,7 @@ function MenuPage() {
         <div className="max-w-3xl">
           <span className="text-xs uppercase tracking-[0.25em] text-accent">The Menu</span>
           <h1 className="font-display text-5xl md:text-7xl mt-3 leading-[0.95]">Everything we cook, in one place.</h1>
-          <p className="text-muted-foreground text-lg mt-5 leading-relaxed">From breakfast halwa puri to late-night biryani — explore our food and beverage menu. Tap a category to dive in.</p>
+          <p className="text-muted-foreground text-lg mt-5 leading-relaxed">From breakfast halwa puri to late-night biryani — items add karein aur cart se order place karein.</p>
         </div>
 
         <div className="mt-12 flex flex-wrap gap-3">
@@ -83,20 +100,43 @@ function MenuPage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pb-24">
+        {isLoading && <p className="text-muted-foreground">Loading menu...</p>}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.map((s) => (
-            <div key={s.title} className="tilt-card bg-card border border-border/60 rounded-3xl p-7 shadow-[var(--shadow-soft)]">
+          {sections.map(([title, list]) => (
+            <div key={title} className="tilt-card bg-card border border-border/60 rounded-3xl p-7 shadow-[var(--shadow-soft)]">
               <div className="flex items-center justify-between mb-5 pb-4 border-b border-border/60">
-                <h3 className="font-display text-2xl">{s.title}</h3>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{s.items.length}</span>
+                <h3 className="font-display text-2xl">{title}</h3>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{list.length}</span>
               </div>
-              <ul className="space-y-3">
-                {s.items.map((item) => (
-                  <li key={item} className="flex items-start gap-3 group">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0 group-hover:scale-150 transition-transform" />
-                    <span className="text-[15px] text-foreground/90 leading-relaxed">{item}</span>
-                  </li>
-                ))}
+              <ul className="space-y-4">
+                {list.map((p) => {
+                  const q = qtyOf(p.id);
+                  return (
+                    <li key={p.id} className="flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[15px] text-foreground/90 leading-snug truncate">{p.name}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Rs {p.price_pkr}</p>
+                      </div>
+                      {q > 0 ? (
+                        <div className="flex items-center gap-1 border border-border rounded-full">
+                          <button onClick={() => cart.setQty(p.id, q - 1)} className="p-1.5 hover:text-primary"><Minus className="w-3.5 h-3.5" /></button>
+                          <span className="w-6 text-center text-sm">{q}</span>
+                          <button onClick={() => cart.setQty(p.id, q + 1)} className="p-1.5 hover:text-primary"><Plus className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            cart.add({ id: p.id, name: p.name, price_pkr: p.price_pkr });
+                            toast.success(`${p.name} cart me add ho gaya`);
+                          }}
+                          className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:opacity-90"
+                        >
+                          + Add
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
