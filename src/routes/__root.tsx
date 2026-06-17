@@ -83,11 +83,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Al Fajr Foods — Pakistani Restaurant in Latifabad, Hyderabad" },
       { name: "description", content: "Biryani, BBQ, broast and halwa puri served fresh in Latifabad Unit 7. Family-friendly dining, takeout and delivery — open till 2 AM." },
       { name: "author", content: "Al Fajr Foods" },
-      { property: "og:title", content: "Al Fajr Foods — Latifabad's home of Biryani & BBQ" },
-      { property: "og:description", content: "Hyderabad's beloved Pakistani kitchen since years — biryani, kababs, broast & halwa puri." },
+      { property: "og:title", content: "Al Fajr Foods — Pakistani Restaurant in Latifabad, Hyderabad" },
+      { property: "og:description", content: "Biryani, BBQ, broast and halwa puri served fresh in Latifabad Unit 7. Family-friendly dining, takeout and delivery — open till 2 AM." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Al Fajr Foods — Pakistani Restaurant in Latifabad, Hyderabad" },
+      { name: "twitter:description", content: "Biryani, BBQ, broast and halwa puri served fresh in Latifabad Unit 7. Family-friendly dining, takeout and delivery — open till 2 AM." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e7fc8b5-fcb7-4672-96be-7076824e5ca5" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e7fc8b5-fcb7-4672-96be-7076824e5ca5" },
     ],
     links: [
       {
