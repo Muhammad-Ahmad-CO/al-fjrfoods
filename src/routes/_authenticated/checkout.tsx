@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/checkout")({
 });
 
 const DELIVERY_FEE = 100;
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/27984731/43vkhl8/";
 
 const schema = z.object({
   customer_name: z.string().trim().min(2).max(80),
@@ -95,6 +96,36 @@ function Checkout() {
       }));
       const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
       if (itemsErr) throw itemsErr;
+
+      // Send to Zapier webhook (fire-and-forget, no-cors)
+      try {
+        await fetch(ZAPIER_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          mode: "no-cors",
+          body: JSON.stringify({
+            order_id: order.id,
+            timestamp: new Date().toISOString(),
+            triggered_from: window.location.origin,
+            customer_name: parsed.data.customer_name,
+            phone: parsed.data.phone,
+            method,
+            address: method === "delivery" ? address.trim() : null,
+            notes: notes.trim() || null,
+            subtotal_pkr: subtotal,
+            delivery_fee_pkr: deliveryFee,
+            total_pkr: total,
+            items: items.map((i) => ({
+              name: i.name,
+              quantity: i.quantity,
+              unit_price_pkr: i.price_pkr,
+              line_total_pkr: i.price_pkr * i.quantity,
+            })),
+          }),
+        });
+      } catch {
+        // Don't block order on webhook failure
+      }
 
       clear();
       toast.success("Order place ho gaya! Hum jald confirm karenge.");
