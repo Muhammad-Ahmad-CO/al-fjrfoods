@@ -1,14 +1,20 @@
 # AL FJR Foods
 
-A modern food brand website crafted to present AL FJR Foods as a premium culinary business with a strong digital identity, inviting visual language, and customer-first storytelling. The experience is designed to communicate warmth, quality, and trust while encouraging inquiry, engagement, and future growth.
+[![TypeScript](https://img.shields.io/badge/TypeScript-94.2%25-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-UI-61DAFB?logo=react&logoColor=black)](https://react.dev/) [![Responsive](https://img.shields.io/badge/Design-Responsive-8B5CF6)](https://github.com/Muhammad-Ahmad-CO/al-fjrfoods)
+
+## Live Website Preview
+
+> The repository currently does not include a verified public live URL. Add the deployed URL here when available.
+
+[![View Repository](https://img.shields.io/badge/View_Repository-GitHub-181717?logo=github)](https://github.com/Muhammad-Ahmad-CO/al-fjrfoods)
 
 ## Overview
 
-AL FJR Foods is a polished brand website built to showcase food offerings, culinary identity, and business value in a way that feels premium and approachable. The design reflects both hospitality and professionalism, making the brand feel memorable across desktops, tablets, and mobile devices.
+AL FJR Foods is a modern food brand website crafted to present a premium culinary business with a strong digital identity, inviting visual language, and customer-first storytelling. The experience communicates warmth, quality, and trust while supporting future growth.
 
 ## Brand Purpose
 
-The project presents AL FJR Foods as a modern food and hospitality brand focused on freshness, taste, and customer experience. It helps visitors quickly understand the business, what it offers, and why it stands out in a crowded market.
+The project presents AL FJR Foods as a modern food and hospitality brand focused on freshness, taste, and customer experience. Visitors can quickly understand the business, its offering, and its value.
 
 ## Core Features
 
@@ -16,37 +22,13 @@ The project presents AL FJR Foods as a modern food and hospitality brand focused
 - Responsive layout across all screen sizes
 - Strong hero messaging and actionable CTAs
 - Product and category presentation sections
-- Brand storytelling with hospitality-focused tone
-- Clean and modern interface design
-- Flexible structure for future menus, promotions, or ecommerce expansion
-
-## Business Goals
-
-- Build a premium online presence for the food brand
-- Increase trust and recognition through clear brand storytelling
-- Highlight food value and customer appeal
-- Improve digital engagement and inquiry conversion
-- Establish a scalable foundation for future marketing and growth
-
-## Site Structure
-
-The website is designed to guide visitors through a welcoming brand experience:
-1. Hero section with strong brand identity
-2. Product or category presentation
-3. Brand story and business overview
-4. Featured food offerings or highlights
-5. Quality and value narrative
-6. Contact or inquiry CTA
-7. Footer with relevant brand links and details
+- Hospitality-focused brand storytelling
+- Clean modern interface
+- Flexible foundation for menus, promotions, and ecommerce
 
 ## Design Direction
 
-The visual language is warm, appetizing, and trustworthy:
-- rich culinary colors and elegant spacing
-- modern typography and content hierarchy
-- polished cards and section layouts
-- customer-first storytelling and contrast balance
-- subtle animation to elevate the brand experience
+Rich culinary colors, elegant spacing, modern typography, polished cards, and subtle motion create a warm, appetizing, and trustworthy brand experience.
 
 ## Tech Stack
 
@@ -54,32 +36,18 @@ The visual language is warm, appetizing, and trustworthy:
 - TypeScript
 - Vite
 - Tailwind CSS
-- Modern frontend tooling and UI patterns
-
-## Highlights
-
-- Premium brand experience for food hospitality
-- Strong conversion-focused marketing structure
-- Clean modern UI with warm, appetizing tone
-- Flexible foundation for future product, menu, and ordering features
+- Modern frontend tooling
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js
-- npm
-
-### Installation
-
 ```bash
-git clone <repository-url>
+git clone https://github.com/Muhammad-Ahmad-CO/al-fjrfoods.git
 cd al-fjrfoods
 npm install
 npm run dev
 ```
 
-### Build
+## Production Build
 
 ```bash
 npm run build
@@ -87,14 +55,7 @@ npm run build
 
 ## Deployment
 
-This project is suitable for deployment on:
-- Vercel
-- Netlify
-- other modern static hosting platforms
-
-## Notes
-
-AL FJR Foods is designed as a premium food-brand website that balances visual richness with clarity and usability. It presents the brand as polished, trustworthy, and customer-focused while creating room for future digital growth.
+Suitable for Vercel, Netlify, and other modern static hosting platforms.
 
 ---
 
