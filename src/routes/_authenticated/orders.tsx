@@ -40,16 +40,16 @@ function OrdersPage() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="font-display text-4xl md:text-5xl">My Orders</h1>
-            <p className="text-muted-foreground mt-2">Aap ki saari orders ki history.</p>
+            <p className="text-muted-foreground mt-2">Your complete order history.</p>
           </div>
-          <Link to="/menu" className="text-sm text-primary hover:underline">+ Naya order</Link>
+          <Link to="/menu" className="text-sm text-primary hover:underline">+ New order</Link>
         </div>
 
         {isLoading && <p className="text-muted-foreground">Loading...</p>}
         {!isLoading && (!data || data.length === 0) && (
           <div className="bg-card border border-border/60 rounded-2xl p-12 text-center">
-            <p className="text-muted-foreground">Abhi koi order nahi.</p>
-            <Link to="/menu" className="inline-block mt-4 px-6 py-3 rounded-full bg-primary text-primary-foreground text-sm">Menu dekhein</Link>
+            <p className="text-muted-foreground">No orders yet.</p>
+            <Link to="/menu" className="inline-block mt-4 px-6 py-3 rounded-full bg-primary text-primary-foreground text-sm">View Menu</Link>
           </div>
         )}
 

@@ -41,7 +41,7 @@ function AdminPage() {
       <SiteLayout>
         <div className="max-w-md mx-auto p-16 text-center">
           <h1 className="font-display text-3xl">Access denied</h1>
-          <p className="text-muted-foreground mt-3">Yeh page sirf admin ke liye hai.</p>
+          <p className="text-muted-foreground mt-3">This page is for admins only.</p>
         </div>
       </SiteLayout>
     );
@@ -50,7 +50,7 @@ function AdminPage() {
     <SiteLayout>
       <section className="max-w-7xl mx-auto px-6 py-12">
         <h1 className="font-display text-4xl md:text-5xl mb-2">Orders Dashboard</h1>
-        <p className="text-muted-foreground mb-8">Saari orders ek jagah — status update karein.</p>
+        <p className="text-muted-foreground mb-8">All orders in one place — update their status here.</p>
         {isLoading && <p>Loading...</p>}
         <div className="space-y-4">
           {data?.map((o: any) => (
@@ -83,7 +83,7 @@ function AdminPage() {
               </div>
             </div>
           ))}
-          {data?.length === 0 && <p className="text-muted-foreground">Abhi koi order nahi.</p>}
+          {data?.length === 0 && <p className="text-muted-foreground">No orders yet.</p>}
         </div>
       </section>
     </SiteLayout>

@@ -54,7 +54,7 @@ function Checkout() {
   const total = subtotal + deliveryFee;
 
   async function placeOrder() {
-    if (items.length === 0) return toast.error("Cart khali hai");
+    if (items.length === 0) return toast.error("Your cart is empty");
     const parsed = schema.safeParse({
       customer_name: name,
       phone,
@@ -64,7 +64,7 @@ function Checkout() {
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
     if (method === "delivery" && (!address || address.trim().length < 5))
-      return toast.error("Delivery ke liye address chahiye");
+      return toast.error("A delivery address is required");
 
     setSubmitting(true);
     try {
@@ -128,10 +128,10 @@ function Checkout() {
       }
 
       clear();
-      toast.success("Order place ho gaya! Hum jald confirm karenge.");
+      toast.success("Order placed! We will confirm it shortly.");
       navigate({ to: "/orders" });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Order fail");
+      toast.error(err instanceof Error ? err.message : "Order failed");
     } finally {
       setSubmitting(false);
     }
@@ -141,9 +141,9 @@ function Checkout() {
     return (
       <SiteLayout>
         <section className="max-w-2xl mx-auto px-6 py-24 text-center">
-          <h1 className="font-display text-4xl">Cart khali hai</h1>
-          <p className="text-muted-foreground mt-3">Menu se kuch add karein.</p>
-          <Link to="/menu" className="inline-block mt-6 px-6 py-3 rounded-full bg-primary text-primary-foreground">Menu dekhein</Link>
+          <h1 className="font-display text-4xl">Your cart is empty</h1>
+          <p className="text-muted-foreground mt-3">Add something from the menu.</p>
+          <Link to="/menu" className="inline-block mt-6 px-6 py-3 rounded-full bg-primary text-primary-foreground">View Menu</Link>
         </section>
       </SiteLayout>
     );
@@ -165,9 +165,9 @@ function Checkout() {
           </div>
 
           <div className="bg-card border border-border/60 rounded-2xl p-6 space-y-4">
-            <h2 className="font-display text-xl">Aap ki details</h2>
+            <h2 className="font-display text-xl">Your details</h2>
             <div>
-              <label className="text-xs uppercase tracking-wider text-muted-foreground">Naam</label>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground">Full Name</label>
               <input value={name} onChange={(e) => setName(e.target.value)} maxLength={80} className="w-full mt-1 px-4 py-3 rounded-xl bg-background border border-border outline-none focus:border-primary" />
             </div>
             <div>
@@ -189,7 +189,7 @@ function Checkout() {
 
         <aside className="lg:col-span-2">
           <div className="bg-card border border-border/60 rounded-2xl p-6 sticky top-24">
-            <h2 className="font-display text-xl mb-4">Aap ka order</h2>
+            <h2 className="font-display text-xl mb-4">Your order</h2>
             <ul className="space-y-3 mb-4 max-h-80 overflow-y-auto">
               {items.map((i) => (
                 <li key={i.id} className="flex items-center gap-3 text-sm">

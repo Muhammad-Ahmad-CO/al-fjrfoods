@@ -5,6 +5,7 @@ import { Utensils, Coffee, Leaf, Drumstick, Plus, Minus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
+import { dishImageFor } from "@/lib/dishImages";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/menu")({
@@ -74,7 +75,7 @@ function MenuPage() {
         <div className="max-w-3xl">
           <span className="text-xs uppercase tracking-[0.25em] text-accent">The Menu</span>
           <h1 className="font-display text-5xl md:text-7xl mt-3 leading-[0.95]">Everything we cook, in one place.</h1>
-          <p className="text-muted-foreground text-lg mt-5 leading-relaxed">From breakfast halwa puri to late-night biryani — items add karein aur cart se order place karein.</p>
+          <p className="text-muted-foreground text-lg mt-5 leading-relaxed">From breakfast halwa puri to late-night biryani — add items and place your order from the cart.</p>
         </div>
 
         <div className="mt-12 flex flex-wrap gap-3">
@@ -101,46 +102,49 @@ function MenuPage() {
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pb-24">
         {isLoading && <p className="text-muted-foreground">Loading menu...</p>}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.map(([title, list]) => (
-            <div key={title} className="tilt-card bg-card border border-border/60 rounded-3xl p-7 shadow-[var(--shadow-soft)]">
-              <div className="flex items-center justify-between mb-5 pb-4 border-b border-border/60">
-                <h3 className="font-display text-2xl">{title}</h3>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{list.length}</span>
-              </div>
-              <ul className="space-y-4">
-                {list.map((p) => {
-                  const q = qtyOf(p.id);
-                  return (
-                    <li key={p.id} className="flex items-center gap-3">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[15px] text-foreground/90 leading-snug truncate">{p.name}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">Rs {p.price_pkr}</p>
+        {sections.map(([title, list]) => (
+          <div key={title} className="mb-14">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/60">
+              <h3 className="font-display text-3xl">{title}</h3>
+              <span className="text-xs px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{list.length} items</span>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {list.map((p) => {
+                const q = qtyOf(p.id);
+                return (
+                  <div key={p.id} className="tilt-card group bg-card rounded-3xl overflow-hidden border border-border/60 shadow-[var(--shadow-soft)] flex flex-col">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img src={dishImageFor(p.subcategory, p.category)} alt={p.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    </div>
+                    <div className="p-5 flex flex-col gap-3 flex-1">
+                      <div className="flex-1">
+                        <p className="font-display text-xl leading-snug">{p.name}</p>
+                        <p className="text-sm text-muted-foreground mt-1">Rs {p.price_pkr}</p>
                       </div>
                       {q > 0 ? (
-                        <div className="flex items-center gap-1 border border-border rounded-full">
-                          <button onClick={() => cart.setQty(p.id, q - 1)} className="p-1.5 hover:text-primary"><Minus className="w-3.5 h-3.5" /></button>
+                        <div className="flex items-center gap-1 border border-border rounded-full self-start">
+                          <button onClick={() => cart.setQty(p.id, q - 1)} className="p-2 hover:text-primary"><Minus className="w-3.5 h-3.5" /></button>
                           <span className="w-6 text-center text-sm">{q}</span>
-                          <button onClick={() => cart.setQty(p.id, q + 1)} className="p-1.5 hover:text-primary"><Plus className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => cart.setQty(p.id, q + 1)} className="p-2 hover:text-primary"><Plus className="w-3.5 h-3.5" /></button>
                         </div>
                       ) : (
                         <button
                           onClick={() => {
                             cart.add({ id: p.id, name: p.name, price_pkr: p.price_pkr });
-                            toast.success(`${p.name} cart me add ho gaya`);
+                            toast.success(`${p.name} added to cart`);
                           }}
-                          className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:opacity-90"
+                          className="self-start px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:opacity-90"
                         >
                           + Add
                         </button>
                       )}
-                    </li>
-                  );
-                })}
-              </ul>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
 
         <div className="mt-16 p-8 md:p-10 rounded-3xl border border-border/60 bg-[var(--gradient-warm)] text-primary-foreground flex flex-col md:flex-row items-start md:items-center gap-6 justify-between shadow-[var(--shadow-elegant)]">
           <div>

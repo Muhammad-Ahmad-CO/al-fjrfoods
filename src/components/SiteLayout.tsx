@@ -54,9 +54,14 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                 <button onClick={signOut} className="p-2 text-muted-foreground hover:text-primary" aria-label="Sign out"><LogOut className="w-4 h-4" /></button>
               </div>
             ) : (
-              <Link to="/auth" className="ml-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition shadow-[var(--shadow-soft)]">
-                Sign In
-              </Link>
+              <>
+                <Link to="/signup" className="ml-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card text-foreground text-sm font-medium hover:bg-secondary transition">
+                  Sign Up
+                </Link>
+                <Link to="/login" className="ml-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition shadow-[var(--shadow-soft)]">
+                  Sign In
+                </Link>
+              </>
             )}
           </nav>
           <div className="md:hidden flex items-center gap-2">
@@ -84,7 +89,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                   <button onClick={() => { setOpen(false); signOut(); }} className="py-3 text-left text-base font-medium text-muted-foreground">Sign out</button>
                 </>
               ) : (
-                <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium">Sign In</Link>
+                <>
+                  <Link to="/signup" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-border text-sm font-medium">Sign Up</Link>
+                  <Link to="/login" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium">Sign In</Link>
+                </>
               )}
               <a href="tel:+923320336000" className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-border text-sm font-medium">
                 <Phone className="w-4 h-4" /> +92 332 0336000
